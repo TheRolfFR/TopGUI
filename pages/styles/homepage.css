@@ -1,0 +1,21 @@
+#homepage {
+    text-align: center;
+    background: url(../img/background.png);
+    background-size: 100% auto;
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    /* https://s-media-cache-ak0.pinimg.com/originals/28/98/54/289854dae67ede707890974d5b209100.png */
+}
+#apps .app {
+    margin: 0 10px;
+}
+#apps .img {
+    width: 60px;
+    height: 60px;
+    display: block;
+    margin-bottom: 10px;
+}
+#apps .img i {
+    font-size: 48px;
+}
