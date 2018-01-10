@@ -17,9 +17,12 @@ body {
 	overflow: hidden;
 	border: 0px none;
 }
-#foo {
+.webview.active {
 	height: 100%;
-	width: 100%;
+}
+.webview {
+	height: 0px;
+	overflow: hidden;
 }
 #haut {
 	position: fixed;
@@ -49,6 +52,8 @@ body {
 	background: #ececec;
 	border-right: 1px solid #eaeaea;
 	padding: 5px;
+	width: 31px;
+	height: 30px;
 }
 #haut #tabs > .tab.active {
 	background: #666;

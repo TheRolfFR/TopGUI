@@ -6,11 +6,15 @@
   "homepage": "./",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-     "rebuild": "npm rebuild --runtime=electron --target=1.1.3 --disturl=https://atom.io/download/atom-shell --abi=48"
+    "rebuild": "npm rebuild --runtime=electron --target=1.1.3 --disturl=https://atom.io/download/atom-shell --abi=48"
   },
   "author": "TheRolfFR",
   "license": "GPL-3.0",
   "devDependencies": {
-    "electron": "^1.6.11"
+    "electron": "^1.6.11",
+    "get-image-colors": "^1.8.1"
+  },
+  "dependencies": {
+    "get-image-colors": "^1.8.1"
   }
 }

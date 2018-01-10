@@ -21,8 +21,11 @@
 						<i class="material-icons" id="undo-btn">&#xE314;</i><i class="material-icons" id="redo-btn">&#xE315;</i><i class="material-icons" id="min-btn">&#xE15B;</i><i class="material-icons" id="close-btn">&#xE5CD;</i>
 					</div>
 				</div>
-				<webview id="foo" src="./pages/homepage.html" preload="./scripts/links.js" useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36" style="position: relative; height: 100%; width: 100%;"></webview>
+				<webview class="webview active" src="https://therolf.fr/topgui/changelog/" preload="./scripts/links.js" useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36"></webview>
 			</div>
 		</div>
 	</body>
+	<script async>
+		const getColors = require('get-image-colors');
+	</script>
 </html>
