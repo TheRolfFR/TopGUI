@@ -1,18 +1,20 @@
 {
-  "name": "Topgui",
+  "name": "TopGUI",
   "version": "0.0.1",
   "description": "Keep your content always on top !",
   "main": "main.js",
+  "icon": "img/Topgui.ico",
   "homepage": "./",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "rebuild": "npm rebuild --runtime=electron --target=1.1.3 --disturl=https://atom.io/download/atom-shell --abi=48"
+    "build": "electron-packager . --platform=win32 --arch=x64 --icon=img/Topgui.ico --asar --overwrite"
   },
   "author": "TheRolfFR",
   "license": "GPL-3.0",
   "devDependencies": {
     "electron": "^1.6.11",
-    "get-image-colors": "^1.8.1"
+    "get-image-colors": "^1.8.1",
+    "electron-settings": "^3.1.4"
   },
   "dependencies": {
     "get-image-colors": "^1.8.1"

@@ -1,6 +1,9 @@
 const electron = require('electron');
+const {session} = require('electron');
 const {app, BrowserWindow, Tray, Menu, ipcMain} = electron;
 let navigator;
+let test;
+
 
 function navigation() {
   navigator = new BrowserWindow({
@@ -14,12 +17,16 @@ function navigation() {
     maximized: false,
     movable: true,
     title: 'Topgui',
-    icon: 'img/Topgui.png'
+    icon: 'img/Topgui.ico'
   });
 
-  navigator.loadURL(`file://${__dirname}/navigator.html`);
+  navigator.setMenu(null);
 
-  navigator.webContents.openDevTools();
+  navigator.loadURL(`file://${__dirname}/navigator.html`, {
+    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0'
+  });
+
+  // navigator.webContents.openDevTools();
 
   navigator.on('closed', () => {
     navigator = null;
@@ -57,7 +64,32 @@ ipcMain.on('navHoverReq', (event) => {
 });
 
 app.on('ready', () => {
+  session.fromPartition('', { cache: false });
   navigation();
+
+  /*test = new BrowserWindow({
+    transparent: true,
+    alwaysOnTop: true,
+    frame: false,
+    width: 800,
+    'minWidth': 300,
+    height: 600,
+    'minHeight': 160,
+    maximized: false,
+    movable: true,
+    title: 'Topgui',
+    icon: 'img/Topgui.ico'
+  });
+
+  test.setMenu(null);
+
+  test.loadURL(`http://pushbullet.com/`);
+
+  test.webContents.openDevTools();
+
+  navigator.on('closed', () => {
+    navigator = null;
+  });*/
 });
 
 app.on('window-all-closed', () => {

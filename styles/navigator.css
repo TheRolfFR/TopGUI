@@ -1,0 +1,115 @@
+#navigator {
+	position: relative;
+	background-color: white;
+	height: 100%;
+}
+body.hover #content {
+	padding-top: 30px;
+}
+#content {
+	height: 100%;
+	overflow: hidden;
+	border: 0px none;
+	transition: all .2s linear;
+}
+.webview.active {
+	height: 100%;
+}
+.webview {
+	height: 0px;
+	overflow: hidden;
+}
+#haut {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right:0;
+	height: 30px;
+	opacity: 0;
+	background-color: #2F2F2F;
+	-webkit-app-region: drag;
+	z-index: 1000;
+	-moz-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.5);
+	-o-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.5);
+	box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.5);
+	filter:progid:DXImageTransform.Microsoft.Shadow(color=rgba(0,0,0,0.5), Direction=NaN, Strength=3);
+	transition: all .2s linear;
+	color: white;
+}
+#haut #tabs {
+	-webkit-app-region: no-drag;
+	height: 100%;
+}
+#haut #tabs > * {
+	cursor: pointer;
+}
+#haut #tabs > .tab {
+	background: #ececec;
+	width: 30px;
+	height: 30px;
+	padding: 5px;
+}
+#haut #tabs > .tab img {
+	height: 100%;
+	width: 100%;
+}
+#haut #tabs > .tab.active {
+	background: #666;
+}
+#controls {
+	-webkit-app-region: no-drag;
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 3px 5px 3px 0;
+}
+#menu-top-right {
+	height: 24px;
+    width: 24px;
+    max-width: 24px;
+    min-width: 24px;
+}
+#list-menu > *, #list-menu i {
+	position: relative;
+	height: 34px;
+	line-height: 34px;
+	text-align: center;
+	font-weight: 600;
+}
+#list-menu > li {
+	background: transparent;
+	padding: 0;
+	width: 100%;
+}
+#list-menu > li.mdl-menu__item:hover, #list-menu i:hover {
+	background-color: #eee;
+}
+.fifth {
+	width: 20%;
+	display: inline-block;
+}
+#topleft {
+	transform: scaleY(-1);
+	transform-origin: center;
+}
+.mdl-menu {
+	color: black;
+}
+#controls * {
+	cursor: pointer;
+}
+body.hover #haut {
+	opacity: 1;
+}
+body .vex.vex-theme-plain .vex-dialog-button.vex-dialog-button-primary {
+	background: #2F2F2F;
+}
+body.vex-open .vex.vex-theme-plain .vex-dialog-form .vex-dialog-input input[type="text"] {
+	border-bottom: 3px solid transparent;
+	transition: all .2s ease;
+}
+body.vex-open .vex.vex-theme-plain .vex-dialog-form .vex-dialog-input input[type="text"]:focus {
+	box-shadow: none;
+	border-color: #2f2f2f;
+}

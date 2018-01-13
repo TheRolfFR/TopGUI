@@ -3,25 +3,43 @@
 		<meta charset="UTF-8">
 
 		<link rel="stylesheet" href="https://codepen.io/Darkman75/pen/LNqZPv.css">
-		<link rel="stylesheet" href="styles/styles.css">
+		<link rel="stylesheet" href="styles/navigator.css">
+
+		<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.1/css/vex.css'>
+		<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.1/css/vex-theme-plain.css'>
 
 		<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.1/js/vex.combined.min.js'></script>
 		<script>if (window.module) module = window.module;</script>
+		<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+		<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 		<script src="scripts/navigator.js"></script>
 	</head>
 	<body>
 		<div id="navigator">
 			<div id="content">
 				<div id="haut" class="middle">
-					<div id="tabs" class="middle">
-							<img src="img/Topgui.png" alt="icon" class="tab active"><i id="add-button" class="noselect material-icons">&#xE145;</i><span class="taille"></span>
+					<div id="tabs" class="middle noselect">
+							<img src="img/Topgui.png" alt="icon" class="tab active" id="0"><i id="add-btn" class="noselect material-icons">&#xE145;</i><span class="taille"></span>
 					</div><span class="taille"></span>
 					<div id="controls" class="middle noselect">
-						<i class="material-icons" id="undo-btn">&#xE314;</i><i class="material-icons" id="redo-btn">&#xE315;</i><i class="material-icons" id="min-btn">&#xE15B;</i><i class="material-icons" id="close-btn">&#xE5CD;</i>
+						<i class="material-icons" id="min-btn">&#xE15B;</i><button id="menu-top-right" class="mdl-button mdl-js-button mdl-button--icon">
+							<i class="material-icons">more_vert</i>
+						</button><ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect middle" for="menu-top-right" id="list-menu">
+							<li class="middle">
+								<i class="material-icons tier" id="undo-btn">&#xE314;</i><i id="reload-btn" class="material-icons tier">&#xE5D5;</i><i class="material-icons tier" id="redo-btn">&#xE315;</i><span class="taille"></span>
+							</li>
+							<li class="mdl-menu__item" id="gotourl">Go to url</li>
+							<li class="mdl-menu__item middle">
+									<i id="topleft"  class="pin-btn material-icons tier">&#xE0B5;
+								</i><i id=""         class="pin-btn material-icons tier">&#xE5D0;
+								</i><i id="topright" class="pin-btn material-icons tier">&#xE0B2;
+								</i><span class="taille"></span>
+							</li>
+						</ul><i class="material-icons" id="close-btn">&#xE5CD;</i>
 					</div>
 				</div>
-				<webview class="webview active" src="https://therolf.fr/topgui/changelog/" preload="./scripts/links.js" useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36"></webview>
 			</div>
 		</div>
 	</body>

@@ -7,6 +7,12 @@
     color: #fff;
     /* https://s-media-cache-ak0.pinimg.com/originals/28/98/54/289854dae67ede707890974d5b209100.png */
 }
+#homepage > span:first-child {
+    padding: 20px 0;
+}
+#name {
+    height: 50px;
+}
 #apps .app {
     margin: 0 10px;
 }

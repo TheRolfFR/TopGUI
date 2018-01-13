@@ -1,0 +1,73 @@
+body {
+    background: #222;
+}
+#video {
+    text-align: center;
+    position: relative;
+    color: #fff;
+}
+#video #player {
+    padding: 10px;
+}
+#video img {
+    width: 200px;
+    max-width: 100%;
+    margin: 10px 0;
+}
+#video link, #video script {
+    display: none;
+}
+#video span, #video form {
+    max-width: 100%;
+}
+#video form > input {
+    width: 600px;
+    max-width: 100%;
+    display: block;
+    margin: 20px 0;
+}
+#video form input {
+    background: #333;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    color: #fff;
+    border: 0px none;
+    padding: 5px;
+    line-height: 20px;
+}
+#video form > div {
+    text-align: left;
+    margin: -10px 0;
+}
+#theiframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+body:hover #close {
+    opacity: 1;
+}
+body {
+    overflow: hidden;
+}
+#close {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    opacity: 0;
+    z-index: 20;
+}
+#close i {
+    margin-top: -22px;
+    padding: 10px;
+    color: white;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    background: rgba(0,0,0,.5);
+    cursor: pointer;
+}

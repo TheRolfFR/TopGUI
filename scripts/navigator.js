@@ -1,65 +1,250 @@
 const {ipcRenderer} = require('electron');
+const {session} = require('electron').remote;
 const remote = require('electron').remote;
+const settings = require('electron-settings');
+var screen = require('electron').screen.getPrimaryDisplay().bounds;
 
-const Store = require('electron-store');
-const store = new Store();
+session.fromPartition('', { cache: false });
 
 var counter = 0;
 
-function addContent(store, name, content) {
-	var n = '\n';
-	if(store.get(name) === '') {
-		n = '';
-	}
-	store.set(name, store.get(name) + n + content); 
-}
-
-store.set('beforehistory','');
-store.set('afterhistory','');
+//defining vex js theme
+vex.defaultOptions.className = 'vex-theme-plain';
 
 function sendMessage() {
 	ipcRenderer.send('navHoverReq');
 }
 
-function dispPage(url) {
-	$('.webview, #tabs .tab').removeClass('active');
-	$('.webview:last').after('<webview id="' + counter + '" src="' + url + '" class="webview active" preload="./scripts/links.js" class="webview.active" useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36"></webview>');
-	$('#add-button').before('<span class="tab" id="' + counter + '" alt="' + url + '"></span>');
-	$('.webview:last, #tabs .tab:last').addClass('active');
+var webviews = [];
 
-	var webview = $('.webview:last')[0];
-	console.log(webview);
+function dispPage(url, homepage = 0) {
+	$('.webview, #tabs .tab').removeClass('active');
+	var w = $('<webview id="' + counter + '" src="' + url + '" class="webview active" nodeintegration preload="./scripts/links.js" class="webview.active" useragent="Mozilla/5.0 (Linux; Android 8.0; Pixel XL Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.65 Mobile Safari/537.36"></webview>').appendTo("#content")[0];
+	if(!homepage) {
+		$('#add-btn').before('<span class="tab sortable" id="' + counter + '" alt="' + url + '"></span>');
+	}
+	$('.webview:last, #tabs .tab:last').addClass('active');
 	
-	webview.addEventListener('console-message', (e) => {
+	var c = counter;
+
+	w.addEventListener('console-message', (e) => {
 		if(e.message.startsWith('electron:')) {
 			var json = e.message.replace(/electron:(.+)/, '$1');
-			json = JSON.parse(json);
-			console.log(json);
-			switch(json.action) {
-				case "blank":
-					dispPage(json.url);
-					break;
-				case "faviconColor":
-					changeColor(json.href, json.url);
+			switch(json) {
+				case "click":
+					if($('#menu-top-right').next().hasClass('is-visible')) {
+						$('#menu-top-right').trigger('click');
+					}
 					break;
 				default:
-					alert('JSON fail : ' + e.message);
+					json = JSON.parse(json);
+					switch(json.action) {
+						case "blank":
+							dispPage(json.url);
+							break;
+						case "Pageinfo":
+							ModifyInfo(json.url, json.favicon, json.themeColor, c);
+							break;
+						default:
+							break;
+					}
 					break;
 			}
 		}
 	});
+	
+	w.addEventListener('error', (e) => {
+		console.log("An error occured, please refresh or retry later");
+	});
+	
+	w.insertCSS(' ::-webkit-scrollbar { width: 5px; height: 5px; background-color: white; } ::-webkit-scrollbar-thumb { -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3); background-color: #555;');
+
+	var obj = {
+		id: counter,
+		active: true,
+		webview: w
+	}
+	
+	webviews.push(obj);
+
+	for(var i = 0; i < webviews.length; i++) {
+		if(webviews[i].id != counter) {
+			webviews[i].active = false;
+		}
+	}
 
 	counter++;
 }
 
-function changeColor(href, url) {
-	getColors(href).then(colors => {
-		$(document).find('#tabs .tab[alt="' + url + '"]').style.backgroundColor = colors[4].hex();
+function ModifyInfo(url, favicon, themeColor, c) {
+	if(c != 0) {
+		// show favicon on tab
+		if(favicon !== "") {
+			var faviconurl = favicon;
+			if(!favicon.indexOf("http") == 0) {
+				faviconurl = url + favicon;
+			}
+			$(document).find('#tabs .tab#' + c).html('<img src="' + faviconurl + '" alt=" " />');
+		} else {
+			if(url !== "") {
+				$(document).find('#tabs .tab#' + c).html('<img src="https://icons.better-idea.org/icon?size=30&url=' + url + '" alt=" " />');
+			}
+		}
+	
+		// set themeColor as background color or reset it
+		$(document).find('#tabs .tab#' + c).css("background-color", themeColor);
+	}
+}
+
+function ActiveWebview() {
+	for(var i = 0; i < webviews.length; i++) {
+		if(webviews[i].active == true) {
+			return webviews[i].webview;
+		}
+	}
+	return null;
+}
+
+function addTab() {
+	var defaulturl = "https://www.google.com";
+	if(settings.has('newtabhomepage')) {
+		if(settings.get('newtabhomepage') !== '') {
+			dispPage(settings.get('newtabhomepage'));
+		} else {
+			dispPage(defaulturl);
+		}
+	} else {
+		dispPage(defaulturl);
+	}
+}
+
+function closeTab(id) {
+	if(id != 0) {
+		vex.dialog.confirm({
+			message: "Do you want to delete this tab ?",
+			callback: function (confirmed) {
+				if(confirmed) {
+		
+					// remove element from array
+					for(var i = 0; i < webviews.length; i++) {
+						if(webviews[i].id == id) {
+							webviews.splice(i, 1);
+
+							$(document).find('.tab.sortable#' + id).prev().trigger('click');
+
+							//remove tab and webview
+							$(document).find('.webview#' + id + ', .tab.sortable#' + id).remove();
+
+							return true;
+						}
+					}
+				}
+			}
+		});
+	}
+	return false;
+}
+
+function goToUrl() {
+	var id = ActiveWebview().id;
+	var yestext = 'OPEN NEW TAB';
+	if(parseInt(id)) { yestext = 'GO'; }
+
+	vex.dialog.open({
+		message: 'Goto url :',
+		input: '<input name="url" type="text" placeholder="url" required />',
+		buttons: [
+			$.extend({}, vex.dialog.buttons.YES, { text: yestext }),
+			$.extend({}, vex.dialog.buttons.NO, { text: 'Cancel' })
+		],
+		callback: function (data) {
+			if (data) {
+				var url = data.url;
+				if(!/^https?:\/\//i.test(url)) {
+					url = 'http://' + url;
+				}
+				if(parseInt(id)) {
+					ActiveWebview().loadURL(url);
+				} else {
+					dispPage(url);
+				}
+				return true;
+			}
+		}
 	});
+
+	return false;
+}
+
+function switchToTab(id) {
+	for(var i = 0; i < webviews.length; i++) {
+		webviews[i].active = false;
+		if(webviews[i].id == id) {
+			webviews[i].active = true;
+		}
+	}
+
+	$(document).find('.webview, #tabs .tab').removeClass('active');
+	$(document).find('.webview#' + id + ', #tabs .tab#' + id).addClass('active');
+}
+
+function goToTab(idorname) {
+	var id = ActiveWebview().id;
+	switch (idorname) {
+		case "previous":
+			if($('.tab.active').prev().length) {
+				$('.tab.active').prev().trigger('click');
+			}
+			break;
+		case "next":
+		if($('.tab.active').next().length) {
+			if($('.tab.active').next().attr('id') != 'add-btn') {
+				$('.tab.active').next().trigger('click');
+			}
+		}
+		default:
+			$('.tab#' + idorname).trigger('click');
+			break;
+	}
+}
+
+function setPosition(name = "") {
+	var offsetX, offsetY;
+
+	var width = 440;
+	var height = 260;
+	var margin = 20;
+	
+	switch (name) {
+		case "topleft":
+			offsetX = margin;
+			offsetY = margin;
+			break;
+		case "topright":
+			offsetX = screen.width - width - margin;
+			offsetY = margin;
+			break;
+		case "bottomleft":
+			offsetX = margin;
+			offsetY = screen.height - height - margin;
+			break;
+		case "bottomright":
+			offsetX = screen.width - width - margin;
+			offsetY = screen.height - height - margin;
+			break;
+		default:
+			width = 800;
+			height = 600;
+			offsetX = (screen.width - width) / 2;
+			offsetY = (screen.height - height) / 2;
+			break;
+	}
+	remote.getCurrentWindow().setSize(width, height);
+	remote.getCurrentWindow().setPosition(offsetX, offsetY);
 }
 
 $(document).ready(function(){
-	dispPage('./pages/homepage.html');
+	dispPage('./pages/homepage.html', 1);
 
 	var webview = document.getElementsByClassName("webview");
 	// modify status bar opacity on hover
@@ -71,10 +256,13 @@ $(document).ready(function(){
 			$('body').removeClass('hover');
 		}
 	});
+
+	// minimize window
 	$('#min-btn').on('click', function(e) {
 		var window = remote.getCurrentWindow();
 		window.minimize();
 	});
+	// close window
 	$('#close-btn').on('click', function(e) {
 		var tabs = $('#tabs .tab').length;
 		if(length <= 1) {
@@ -89,26 +277,58 @@ $(document).ready(function(){
 			$('.webview#' + id).remove();
 		}
 	});
+
+	//go back
 	$('#undo-btn').on('click', function() {
-		webview.goBack();
+		ActiveWebview().goBack();
 	});
+
+	//go forward
 	$('#redo-btn').on('click', function(){
-		webview.goForward();
+		ActiveWebview().goForward();
 	});
 
-	$(document).on('click', '.tab', ()=>{
+	// add tab
+	$("#add-btn").on('click', function(){
+		addTab();
+	})
+
+	// reload tab
+	$('#reload-btn').on('click', function(){
+		ActiveWebview().reload();
+	});
+
+	// move to top right
+	$('.pin-btn').on('click', function(){
+		setPosition($(this).attr('id'));
+	});
+
+	// switch beetween tabs
+	$(document).on('click', '.tab', function() {
 		var id = $(this).attr('id');
-		$('.webview, #tabs .tab').removeClass('active');
-		$('.webview#' + id + ', #tabs .tab#' + id).addClass('active');
+		switchToTab(id);
 	});
 
+	$(document).on('contextmenu', '.tab.sortable', function(e) {
+		e.preventDefault();
+		var id = $(this).attr('id');
+
+		closeTab(id);
+	});
+
+	// shortcuts
 	$('body').on('keydown', function(e){
+		// go back
 		if(e.altKey && e.which == 37) {
-			webview.goBack()
+			ActiveWebview().goBack()
 		}
+
+		// go forward
 		if(e.altKey && e.which == 39) {
-			webview.goForward()
+			ActiveWebview().goForward()
 		}
+
+		// exit fullscreen
 		if(e.which == 27) {
 			if (document.exitFullscreen) {
 				document.exitFullscreen();
@@ -118,5 +338,65 @@ $(document).ready(function(){
 				document.webkitExitFullscreen();
 			}
 		}
+
+		// open dev tools
+
+		// open TopGUI dev tools
+		if(e.shiftKey && e.which == 123) {
+
+			remote.getCurrentWindow().toggleDevTools();
+		}
+		// open webview dev tools (the page dev tools)
+		if((!e.shiftKey) && e.which == 123) {
+			if(ActiveWebview().isDevToolsOpened()) {
+				ActiveWebview().CloseDevTools();
+			} else {
+				ActiveWebview().openDevTools();
+			}
+		}
+		
+		// delete tab
+		if(e.ctrlKey && e.which == 87) {
+			// delete tab
+			var id = ActiveWebview().id;
+			closeTab(id);
+		}
+
+		// add a new tab
+		if(e.ctrlKey && e.which == 78) {
+			addTab();
+		}
+
+		// refresh tab
+		if(e.which == 116) {
+			ActiveWebview().reload();
+		}
+
+		// switch between tabs
+		if(e.ctrlKey && e.which < 58 && e.which > 48) {
+			var rank = parseInt(String.fromCharCode(e.which) - 1);
+			console.log(rank);
+			if(rank < webviews.length) {
+				var id = $('#tabs .tab:nth-child(' + (rank+1) + ')').attr('id');
+				console.log(id);
+				switchToTab(id);
+			}
+		}
+
+		//switch between sliding tabs
+		if(e.ctrlKey && (!e.shiftKey) && e.which == 9) {
+			goToTab('next');
+		}
+		if(e.ctrlKey && e.shiftKey && e.which == 9) {
+			goToTab('previous');
+		}
+
+		// go to url
+		if(e.ctrlKey && e.which == 79) {
+			goToUrl();
+		}
 	});
+
+	// go to url
+	$('#gotourl').on('click', goToUrl);
 });
