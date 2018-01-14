@@ -24,9 +24,7 @@ function navigation() {
 
   navigator.setMenu(null);
 
-  navigator.loadURL(`file://${__dirname}/navigator.html`, {
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0'
-  });
+  navigator.loadURL(`file://${__dirname}/navigator.html`);
 
   // navigator.webContents.openDevTools();
 

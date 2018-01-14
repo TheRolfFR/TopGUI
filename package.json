@@ -10,13 +10,7 @@
     "build": "electron-packager . --platform=win32 --arch=x64 --icon=img/Topgui.ico --asar --overwrite"
   },
   "author": "TheRolfFR",
-  "license": "GPL-3.0",
-  "devDependencies": {
-    "electron": "^1.6.11",
-    "get-image-colors": "^1.8.1",
-    "electron-settings": "^3.1.4",
-    "open": "^0.0.5"
-  },
+  "license": "CC BY-NC-SA",
   "dependencies": {
     "electron": "^1.6.11",
     "electron-settings": "^3.1.4",

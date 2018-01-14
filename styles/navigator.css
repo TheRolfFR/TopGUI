@@ -102,6 +102,14 @@ body.hover #content {
 body.hover #haut {
 	opacity: 1;
 }
+body .vex.vex-theme-plain {
+	padding: 0 10px;
+}
+body .vex.vex-theme-plain .vex-content {
+	margin: 0 auto;
+	top: 50%;
+	transform: translateY(-50%);
+}
 body .vex.vex-theme-plain .vex-dialog-button.vex-dialog-button-primary {
 	background: #2F2F2F;
 }
