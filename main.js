@@ -17,7 +17,9 @@ function navigation() {
     maximized: false,
     movable: true,
     title: 'Topgui',
-    icon: 'img/Topgui.ico'
+    icon: 'img/Topgui.ico',
+    backgroundColor: '#94c8f7',
+    show: false
   });
 
   navigator.setMenu(null);
@@ -30,6 +32,10 @@ function navigation() {
 
   navigator.on('closed', () => {
     navigator = null;
+  });
+
+  navigator.once('ready-to-show', () => {
+    navigator.show()
   });
 }
 

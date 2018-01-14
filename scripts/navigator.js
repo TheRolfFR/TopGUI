@@ -4,6 +4,11 @@ const remote = require('electron').remote;
 const settings = require('electron-settings');
 var screen = require('electron').screen.getPrimaryDisplay().bounds;
 
+const open = require('open');
+
+var desktopuseragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) UR/55.1.2883.71 Chrome/60.0.3112.101 Safari/-703607808.-361452744";
+var mobileuseragent = "Mozilla/5.0 (Linux; Android 8.0; Pixel XL Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.65 Mobile Safari/537.36"
+
 session.fromPartition('', { cache: false });
 
 var counter = 0;
@@ -19,7 +24,7 @@ var webviews = [];
 
 function dispPage(url, homepage = 0) {
 	$('.webview, #tabs .tab').removeClass('active');
-	var w = $('<webview id="' + counter + '" src="' + url + '" class="webview active" nodeintegration preload="./scripts/links.js" class="webview.active" useragent="Mozilla/5.0 (Linux; Android 8.0; Pixel XL Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.65 Mobile Safari/537.36"></webview>').appendTo("#content")[0];
+	var w = $('<webview id="' + counter + '" src="' + url + '" class="webview active" nodeintegration preload="./scripts/links.js" class="webview.active" useragent="' + mobileuseragent + '"></webview>').appendTo("#content")[0];
 	if(!homepage) {
 		$('#add-btn').before('<span class="tab sortable" id="' + counter + '" alt="' + url + '"></span>');
 	}
@@ -243,6 +248,25 @@ function setPosition(name = "") {
 	remote.getCurrentWindow().setPosition(offsetX, offsetY);
 }
 
+function changeUserAgent(useragent) {
+	var u;
+	switch(useragent) {
+		case "desktop":
+			u = desktopuseragent;
+			break;
+		case "mobile":
+			u = mobileuseragent;
+			break;
+	}
+	ActiveWebview().setUserAgent(u);
+	$('#reload-btn').trigger('click');
+}
+
+function openInBrowser() {
+	var src = ActiveWebview().src;
+	open(src);
+}
+
 $(document).ready(function(){
 	dispPage('./pages/homepage.html', 1);
 
@@ -303,6 +327,18 @@ $(document).ready(function(){
 		setPosition($(this).attr('id'));
 	});
 
+	// go to url
+	$('#gotourl').on('click', goToUrl);
+
+	// modify useragent
+	$('.useragent').on('click', function(){
+		var useragent = $(this).attr('id');
+		changeUserAgent(useragent);
+	});
+
+	// open in browser
+	$('#openinbrowser').on('click', openInBrowser);
+
 	// switch beetween tabs
 	$(document).on('click', '.tab', function() {
 		var id = $(this).attr('id');
@@ -349,7 +385,7 @@ $(document).ready(function(){
 		// open webview dev tools (the page dev tools)
 		if((!e.shiftKey) && e.which == 123) {
 			if(ActiveWebview().isDevToolsOpened()) {
-				ActiveWebview().CloseDevTools();
+				ActiveWebview().closeDevTools();
 			} else {
 				ActiveWebview().openDevTools();
 			}
@@ -396,7 +432,4 @@ $(document).ready(function(){
 			goToUrl();
 		}
 	});
-
-	// go to url
-	$('#gotourl').on('click', goToUrl);
 });
