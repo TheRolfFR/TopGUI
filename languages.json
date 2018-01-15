@@ -1,0 +1,36 @@
+{
+    "FR": {
+        "gotourl": "Aller à l'URL",
+        "go" : "Consulter",
+        "opennewtab" : "OUVRIR UN NOUVEL ONGLET",
+        "cantaccessurl": "URL inaccessible. Réessayez plus tard",
+        "openinbrowser": "Ouvrir dans le navigateur",
+        "settings": "Paramètres",
+        "newtaburl": "Page d'accueil du nouvel onglet",
+        "defaulturl" : "URL par défaut",
+        "language": "Langage",
+        "reboot": "Vous devez redémarrer TopGUI pour voir les changements",
+        "cancel": "ANNULER",
+        "save": "ENREGISTRER",
+        "confirmdelete": "Supprimer cet onglet ?",
+        "yes": "OUI",
+        "no": "NON"
+    },
+    "EN": {
+        "gotourl": "Go to URL",
+        "go" : "GO",
+        "opennewtab" : "OPEN NEW TAB",
+        "cantaccessurl": "Can't access URL. Please retry later",
+        "openinbrowser": "Open in browser",
+        "settings": "Settings",
+        "newtaburl": "New tab homepage",
+        "defaulturl" : "Default URL",
+        "language": "Language",
+        "reboot": "You need to reboot to see changes",
+        "cancel": "CANCEL",
+        "save": "SAVE",
+        "confirmdelete": "Delete this tab ?",
+        "yes": "YES",
+        "no": "NO"
+    }
+}

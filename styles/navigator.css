@@ -1,3 +1,12 @@
+::-webkit-scrollbar {
+	width: 5px;
+	height: 5px;
+	background-color: white;
+}
+::-webkit-scrollbar-thumb {
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: #555;
+}
 #navigator {
 	position: relative;
 	background-color: white;
@@ -70,6 +79,10 @@ body.hover #content {
     max-width: 24px;
     min-width: 24px;
 }
+#menu-top-right + *, #menu-top-right + * * {
+	max-width: 144px;
+	height: auto !important;
+}
 #list-menu > *, #list-menu i {
 	position: relative;
 	height: 34px;
@@ -77,10 +90,22 @@ body.hover #content {
 	text-align: center;
 	font-weight: 600;
 }
+ul.mdl-menu {
+	position: relative;
+}
+.mdl-menu__outline {
+	bottom: 0;
+	right: 0;
+}
 #list-menu > li {
 	background: transparent;
 	padding: 0;
 	width: 100%;
+}
+#list-menu .text {
+	padding: 8px 10px;
+	line-height: 18px;
+	white-space: initial;
 }
 #list-menu > li.mdl-menu__item:hover, #list-menu i:hover {
 	background-color: #eee;
@@ -102,6 +127,13 @@ body.hover #content {
 body.hover #haut {
 	opacity: 1;
 }
+body .vex .vex-group {
+	margin-bottom: .5em;
+}
+body .vex .vex-group label {
+	margin: 5px 0;
+	display: inline-block;
+}
 body .vex.vex-theme-plain {
 	padding: 0 10px;
 }
@@ -109,15 +141,18 @@ body .vex.vex-theme-plain .vex-content {
 	margin: 0 auto;
 	top: 50%;
 	transform: translateY(-50%);
+	max-height: 100%;
+	overflow: auto;
 }
 body .vex.vex-theme-plain .vex-dialog-button.vex-dialog-button-primary {
 	background: #2F2F2F;
 }
-body.vex-open .vex.vex-theme-plain .vex-dialog-form .vex-dialog-input input[type="text"] {
+body.vex-open .vex.vex-theme-plain .vex-dialog-form .vex-dialog-input input[type="text"], body .vex.vex-theme-plain .vex-dialog-form .vex-dialog-input select {
+	box-shadow: none;
 	border-bottom: 3px solid transparent;
 	transition: all .2s ease;
 }
-body.vex-open .vex.vex-theme-plain .vex-dialog-form .vex-dialog-input input[type="text"]:focus {
+body.vex-open .vex.vex-theme-plain .vex-dialog-form .vex-dialog-input input[type="text"]:focus, body .vex.vex-theme-plain .vex-dialog-form .vex-dialog-input select:focus {
 	box-shadow: none;
 	border-color: #2f2f2f;
 }

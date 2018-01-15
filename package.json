@@ -16,6 +16,8 @@
     "electron-settings": "^3.1.4",
     "get-image-colors": "^1.8.1",
     "open": "^0.0.5",
-    "request": "^2.83.0"
+    "request": "^2.83.0",
+    "url-exists": "^1.0.3",
+    "load-json-file": "^4.0.0"
   }
 }

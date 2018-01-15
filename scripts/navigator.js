@@ -2,16 +2,34 @@ const {ipcRenderer} = require('electron');
 const {session} = require('electron').remote;
 const remote = require('electron').remote;
 const settings = require('electron-settings');
+const urlExists = require('url-exists');
+const loadJsonFile = require('load-json-file');
+const open = require('open');
 var screen = require('electron').screen.getPrimaryDisplay().bounds;
 
-const open = require('open');
-
 var desktopuseragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) UR/55.1.2883.71 Chrome/60.0.3112.101 Safari/-703607808.-361452744";
-var mobileuseragent = "Mozilla/5.0 (Linux; Android 8.0; Pixel XL Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.65 Mobile Safari/537.36"
+var mobileuseragent = "Mozilla/5.0 (Linux; Android 8.0; Pixel XL Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.65 Mobile Safari/537.36";
 
 session.fromPartition('', { cache: false });
 
+var newtabdefaulthomepage = "https://www.google.com";
+
 var counter = 0;
+
+var lang = "";
+var languages = "";
+loadJsonFile('languages.json').then(json => {
+	if(!settings.has('language')) {
+		settings.set('language', 'EN');
+	}
+	lang = json[settings.get('language')];
+	languages = Object.keys(json);
+});
+
+function guiInit() {
+	$('#gotourl')[0].textContent = lang.gotourl;
+	$('#openinbrowser')[0].textContent = lang.openinbrowser;
+}
 
 //defining vex js theme
 vex.defaultOptions.className = 'vex-theme-plain';
@@ -24,7 +42,7 @@ var webviews = [];
 
 function dispPage(url, homepage = 0) {
 	$('.webview, #tabs .tab').removeClass('active');
-	var w = $('<webview id="' + counter + '" src="' + url + '" class="webview active" nodeintegration preload="./scripts/links.js" class="webview.active" useragent="' + mobileuseragent + '"></webview>').appendTo("#content")[0];
+	var w = $('<webview id="' + counter + '" src="' + url + '" class="webview active" preload="./scripts/interface.js" class="webview.active" useragent="' + mobileuseragent + '"></webview>').appendTo("#content")[0];
 	if(!homepage) {
 		$('#add-btn').before('<span class="tab sortable" id="' + counter + '" alt="' + url + '"></span>');
 	}
@@ -57,12 +75,27 @@ function dispPage(url, homepage = 0) {
 			}
 		}
 	});
+
+	w.addEventListener('dom-ready', function () {
+		w.insertCSS('\
+			::-webkit-scrollbar \
+			{ \
+			width: 5px; \
+			height: 5px; \
+			background-color: white; \
+			} \
+			\
+			::-webkit-scrollbar-thumb \
+			{ \
+			-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3); \
+			background-color: #555; \
+			} \
+		  ');
+	});
 	
 	w.addEventListener('error', (e) => {
 		console.log("An error occured, please refresh or retry later");
 	});
-	
-	w.insertCSS(' ::-webkit-scrollbar { width: 5px; height: 5px; background-color: white; } ::-webkit-scrollbar-thumb { -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3); background-color: #555;');
 
 	var obj = {
 		id: counter,
@@ -111,22 +144,25 @@ function ActiveWebview() {
 }
 
 function addTab() {
-	var defaulturl = "https://www.google.com";
 	if(settings.has('newtabhomepage')) {
 		if(settings.get('newtabhomepage') !== '') {
 			dispPage(settings.get('newtabhomepage'));
 		} else {
-			dispPage(defaulturl);
+			dispPage(newtabdefaulthomepage);
 		}
 	} else {
-		dispPage(defaulturl);
+		dispPage(newtabdefaulthomepage);
 	}
 }
 
 function closeTab(id) {
 	if(id != 0) {
 		vex.dialog.confirm({
-			message: "Do you want to delete this tab ?",
+			message: lang.confirmdelete,
+			buttons: [
+				$.extend({}, vex.dialog.buttons.YES, { text: lang.yes }),
+				$.extend({}, vex.dialog.buttons.NO, { text: lang.no })
+			],
 			callback: function (confirmed) {
 				if(confirmed) {
 		
@@ -152,15 +188,15 @@ function closeTab(id) {
 
 function goToUrl() {
 	var id = ActiveWebview().id;
-	var yestext = 'OPEN NEW TAB';
-	if(parseInt(id)) { yestext = 'GO'; }
+	var yestext = lang.opennewtab;
+	if(parseInt(id)) { yestext = lang.go; }
 
 	vex.dialog.open({
 		message: 'Goto url :',
-		input: '<input name="url" type="text" placeholder="url" required />',
+		input: '<input name="url" type="text" placeholder="URL" required />',
 		buttons: [
 			$.extend({}, vex.dialog.buttons.YES, { text: yestext }),
-			$.extend({}, vex.dialog.buttons.NO, { text: 'Cancel' })
+			$.extend({}, vex.dialog.buttons.NO, { text: lang.cancel })
 		],
 		callback: function (data) {
 			if (data) {
@@ -168,12 +204,19 @@ function goToUrl() {
 				if(!/^https?:\/\//i.test(url)) {
 					url = 'http://' + url;
 				}
-				if(parseInt(id)) {
-					ActiveWebview().loadURL(url);
-				} else {
-					dispPage(url);
-				}
-				return true;
+				urlExists(url, function(err, exists) {
+					if(exists) {
+						if(parseInt(id)) {
+							ActiveWebview().loadURL(url);
+						} else {
+							dispPage(url);
+						}
+						return true;
+					} else {
+						vex.dialog.alert(lang.cantaccessurl);
+						return false;
+					}
+				});
 			}
 		}
 	});
@@ -267,12 +310,62 @@ function openInBrowser() {
 	open(src);
 }
 
-$(document).ready(function(){
-	dispPage('./pages/homepage.html', 1);
+function openSettings() {
+	var homepage = "";
+	if(settings.has('newtabhomepage')) { homepage = settings.get('newtabhomepage')}
 
-	var webview = document.getElementsByClassName("webview");
+	var options = "";
+	for(var i = 0; i < languages.length; i++) {
+		var selected = "";
+		if(settings.get('language') == languages[i]) { selected = "selected"}
+
+		options = options + "<option " + selected + ">" + languages[i] + "</option>";
+	}
+	
+	vex.dialog.open({
+		message: lang.settings,
+		input: [
+			'<div class="vex-group">',
+				'<label for="newtabpage">' + lang.newtaburl + '</label>',
+				'<input type="text" name="newtabpage" id="newtabpage" value="' + homepage + '" placeholder="' + lang.defaulturl + ' : ' + newtabdefaulthomepage + '" />',
+			'</div>',
+			'<div class="vex-group">',
+				'<label for="language">' + lang.language + '</label>',
+				'<select id="language" name="language">',
+					options,
+				'</select>',
+				'<div class="note important">' + lang.reboot + '</div>',
+			'</div>',
+		].join(''),
+		callback: function (data) {
+			if (data) {
+				if(data.newtabpage != undefined) {
+					settings.set('newtabhomepage', data.newtabpage.trim());
+				} else {
+					settings.delete('newtabhomepage');
+				}
+				if(data.language != undefined) {
+					settings.set('language', data.language.trim());
+				}
+			}
+		}
+	})
+}
+
+$(document).ready(function(){
+	//display homepage
+	dispPage('http://therolf.fr/topgui/', 1);
+
+	//init languages parameters for TopGUI GUI
+	var interval = setInterval(guiInit, 200);
+	setTimeout(function(){
+		clearInterval(interval);
+	}, 2000);
+
 	// modify status bar opacity on hover
 	setInterval(sendMessage, 1000/60);
+
+	// get message firm remote if topgui is hovered
 	ipcRenderer.on('navHoverMsg', function(event, arg){
 		if(arg == 't') {
 			$('body').addClass('hover');
@@ -335,6 +428,9 @@ $(document).ready(function(){
 		var useragent = $(this).attr('id');
 		changeUserAgent(useragent);
 	});
+
+	// open settings
+	$('#opensettings').on('click', openSettings);
 
 	// open in browser
 	$('#openinbrowser').on('click', openInBrowser);
@@ -399,7 +495,7 @@ $(document).ready(function(){
 		}
 
 		// add a new tab
-		if(e.ctrlKey && e.which == 78) {
+		if(e.ctrlKey && e.which ==  84) {
 			addTab();
 		}
 

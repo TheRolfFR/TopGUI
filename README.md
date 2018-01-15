@@ -8,14 +8,19 @@ Enjoy your favourite content on top
 
 ## GUI
 
-TopGUI looks like a mini browser allowing you to navigate on the web. Use it to always keep an eye on your social networks.
+TopGUI looks like a mini browser allowing you to navigate on the web. Use it to always keep an eye on your favourite content.
+
+##Languages supported
+
+ - Français
+ - English
 
 ## Shortcuts
 
 |Action|Command|
 |--|--|
 |Go to URL|Ctrl + o  |
-|Open a new tab| Ctrl + n |
+|Open a new tab| Ctrl + t |
 |Close the active tab | Ctrl + w |
 |Switch to tab #(number) | Ctrl + (number)
 |Switch to next tab | Ctrl + Tab

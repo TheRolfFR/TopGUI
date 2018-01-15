@@ -1,38 +1,34 @@
-try {
-	window.onload = function() {
-		var script = document.createElement("script");
-		script.src = "https://code.jquery.com/jquery-2.1.4.min.js";
-		document.head.appendChild(script);
-	};
-} catch(e) {
-	console.log(e);
-}
-document.addEventListener('click', function(e) {
+document.addEventListener('auxclick', openLink, false);
+document.addEventListener('click', openLink, false);
+
+function openLink(e) {
 	console.log('electron:click');
     e = e || window.event;
     var target = e.target || e.srcElement;
-		var element = target;
-	
-		while(element.parentNode.tagName !='HTML' && element.parentNode.tagName != 'A' && target.tagName != 'HTML') {
-			element = element.parentNode;
-		}
-	
-		if(element.tagName != 'HTML') {
-			var link = element.parentNode;
-			if(link.tagName == 'A') {
-				if(link.target.toLowerCase() == "_blank") {
-					e.preventDefault();
-					
-					var json = {
-						action: "blank",
-						url: link.href
-					};
-					
-					console.log('electron:' + JSON.stringify(json));
-				}
+	var element = target;
+
+	while(element.parentNode.tagName !='HTML' && element.parentNode.tagName != 'A' && target.tagName != 'HTML') {
+		element = element.parentNode;
+	}
+
+	if(element.tagName != 'HTML') {
+		var link = element.parentNode;
+		if(link.tagName == 'A') {
+			if(link.target.toLowerCase() == "_blank" || e.button == 1) {
+				e.preventDefault();
+				
+				var json = {
+					action: "blank",
+					url: link.href
+				};
+				
+				console.log('electron:' + JSON.stringify(json));
 			}
 		}
-}, false);
+	}
+	return false;
+}
+
 document.addEventListener("DOMContentLoaded", function(event) {
 	function sendPageInfo() {var favicon = "", themeColor = "";
 		for(var i = 0; i < document.getElementsByTagName("link").length; i++) {
