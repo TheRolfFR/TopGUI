@@ -10,7 +10,7 @@ Enjoy your favourite content on top
 
 TopGUI looks like a mini browser allowing you to navigate on the web. Use it to always keep an eye on your favourite content.
 
-##Languages supported
+## Languages supported
 
  - Français
  - English
