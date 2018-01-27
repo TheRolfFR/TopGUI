@@ -482,9 +482,7 @@ $(document).ready(function(){
 
 		// exit fullscreen
 		if(e.which == 27) {
-			if(document.webkitExitFullscreen) {
-				document.webkitExitFullscreen();
-			}
+			ActiveWebview().executeJavaScript('document.webkitExitFullscreen()');
 		}
 
 		// open dev tools
