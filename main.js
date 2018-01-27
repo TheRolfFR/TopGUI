@@ -4,7 +4,7 @@ const {app, BrowserWindow, Tray, Menu, ipcMain} = electron;
 let navigator;
 let test;
 
-
+// main window
 function navigation() {
   navigator = new BrowserWindow({
     transparent: true,
@@ -68,32 +68,9 @@ ipcMain.on('navHoverReq', (event) => {
 });
 
 app.on('ready', () => {
+  // need to disable caching for websites indev
   session.fromPartition('', { cache: false });
   navigation();
-
-  /*test = new BrowserWindow({
-    transparent: true,
-    alwaysOnTop: true,
-    frame: false,
-    width: 800,
-    'minWidth': 300,
-    height: 600,
-    'minHeight': 160,
-    maximized: false,
-    movable: true,
-    title: 'Topgui',
-    icon: 'img/Topgui.ico'
-  });
-
-  test.setMenu(null);
-
-  test.loadURL(`http://pushbullet.com/`);
-
-  test.webContents.openDevTools();
-
-  navigator.on('closed', () => {
-    navigator = null;
-  });*/
 });
 
 app.on('window-all-closed', () => {

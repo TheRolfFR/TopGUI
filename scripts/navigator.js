@@ -16,6 +16,7 @@ var newtabdefaulthomepage = "https://www.google.com";
 
 var counter = 0;
 
+// languages support
 var lang = "";
 var languages = "";
 loadJsonFile('languages.json').then(json => {
@@ -26,6 +27,7 @@ loadJsonFile('languages.json').then(json => {
 	languages = Object.keys(json);
 });
 
+// adapt gui to lang
 function guiInit() {
 	$('#gotourl')[0].textContent = lang.gotourl;
 	$('#openinbrowser')[0].textContent = lang.openinbrowser;
@@ -34,12 +36,14 @@ function guiInit() {
 //defining vex js theme
 vex.defaultOptions.className = 'vex-theme-plain';
 
+// hover message
 function sendMessage() {
 	ipcRenderer.send('navHoverReq');
 }
 
 var webviews = [];
 
+// how to display a page
 function dispPage(url, homepage = 0) {
 	$('.webview, #tabs .tab').removeClass('active');
 	var w = $('<webview id="' + counter + '" src="' + url + '" class="webview active" preload="./scripts/interface.js" class="webview.active" useragent="' + mobileuseragent + '"></webview>').appendTo("#content")[0];
@@ -76,19 +80,18 @@ function dispPage(url, homepage = 0) {
 		}
 	});
 
+	// custom scrollbar
 	w.addEventListener('dom-ready', function () {
 		w.insertCSS('\
-			::-webkit-scrollbar \
-			{ \
-			width: 5px; \
-			height: 5px; \
-			background-color: white; \
+			::-webkit-scrollbar { \
+				width: 5px; \
+				height: 5px; \
+				background-color: white; \
 			} \
 			\
-			::-webkit-scrollbar-thumb \
-			{ \
-			-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3); \
-			background-color: #555; \
+			::-webkit-scrollbar-thumb { \
+				-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3); \
+				background-color: #555; \
 			} \
 		  ');
 	});
@@ -114,6 +117,7 @@ function dispPage(url, homepage = 0) {
 	counter++;
 }
 
+// how to add the tab to the bar
 function ModifyInfo(url, favicon, themeColor, c) {
 	if(c != 0) {
 		// show favicon on tab
@@ -125,7 +129,7 @@ function ModifyInfo(url, favicon, themeColor, c) {
 			$(document).find('#tabs .tab#' + c).html('<img src="' + faviconurl + '" alt=" " />');
 		} else {
 			if(url !== "") {
-				$(document).find('#tabs .tab#' + c).html('<img src="https://icons.better-idea.org/icon?size=30&url=' + url + '" alt=" " />');
+				$(document).find('#tabs .tab#' + c).html('<img src="https://besticon-demo.herokuapp.com/icon?url=' + url + 'm&size=100" alt=" " />');
 			}
 		}
 	
@@ -134,6 +138,7 @@ function ModifyInfo(url, favicon, themeColor, c) {
 	}
 }
 
+// return active webview
 function ActiveWebview() {
 	for(var i = 0; i < webviews.length; i++) {
 		if(webviews[i].active == true) {
@@ -143,6 +148,7 @@ function ActiveWebview() {
 	return null;
 }
 
+// how to add a new tab (with cutstom new tab URL)
 function addTab() {
 	if(settings.has('newtabhomepage')) {
 		if(settings.get('newtabhomepage') !== '') {
@@ -155,6 +161,7 @@ function addTab() {
 	}
 }
 
+// how to close a tab
 function closeTab(id) {
 	if(id != 0) {
 		vex.dialog.confirm({
@@ -186,14 +193,20 @@ function closeTab(id) {
 	return false;
 }
 
+// how to go to an url
 function goToUrl() {
 	var id = ActiveWebview().id;
 	var yestext = lang.opennewtab;
-	if(parseInt(id)) { yestext = lang.go; }
+	var inhomepage = false;
+	if(!parseInt(id)) { inhomepage = true; }
+	if(!inhomepage) { yestext = lang.go; }
+
+	var value = "";
+	if(!inhomepage) { value = ActiveWebview().src }
 
 	vex.dialog.open({
-		message: 'Goto url :',
-		input: '<input name="url" type="text" placeholder="URL" required />',
+		message: lang.gotourl + ' :',
+		input: '<input name="url" type="text" placeholder="URL" required value="' + value + '" />',
 		buttons: [
 			$.extend({}, vex.dialog.buttons.YES, { text: yestext }),
 			$.extend({}, vex.dialog.buttons.NO, { text: lang.cancel })
@@ -224,6 +237,7 @@ function goToUrl() {
 	return false;
 }
 
+// how to switch beetween tabs
 function switchToTab(id) {
 	for(var i = 0; i < webviews.length; i++) {
 		webviews[i].active = false;
@@ -236,6 +250,7 @@ function switchToTab(id) {
 	$(document).find('.webview#' + id + ', #tabs .tab#' + id).addClass('active');
 }
 
+// how to trigger switch beetween tabs
 function goToTab(idorname) {
 	var id = ActiveWebview().id;
 	switch (idorname) {
@@ -256,6 +271,7 @@ function goToTab(idorname) {
 	}
 }
 
+// how to move the window to preset positions
 function setPosition(name = "") {
 	var offsetX, offsetY;
 
@@ -291,6 +307,7 @@ function setPosition(name = "") {
 	remote.getCurrentWindow().setPosition(offsetX, offsetY);
 }
 
+// how to switch beetween useragents
 function changeUserAgent(useragent) {
 	var u;
 	switch(useragent) {
@@ -305,11 +322,13 @@ function changeUserAgent(useragent) {
 	$('#reload-btn').trigger('click');
 }
 
+// how to open external links in browser
 function openInBrowser() {
 	var src = ActiveWebview().src;
 	open(src);
 }
 
+// the settings menu
 function openSettings() {
 	var homepage = "";
 	if(settings.has('newtabhomepage')) { homepage = settings.get('newtabhomepage')}
@@ -373,6 +392,7 @@ $(document).ready(function(){
 			$('body').removeClass('hover');
 		}
 	});
+
 
 	// minimize window
 	$('#min-btn').on('click', function(e) {
@@ -462,11 +482,7 @@ $(document).ready(function(){
 
 		// exit fullscreen
 		if(e.which == 27) {
-			if (document.exitFullscreen) {
-				document.exitFullscreen();
-			} else if (document.msExitFullscreen) {
-				document.msExitFullscreen();
-			} else if(document.webkitExitFullscreen) {
+			if(document.webkitExitFullscreen) {
 				document.webkitExitFullscreen();
 			}
 		}
