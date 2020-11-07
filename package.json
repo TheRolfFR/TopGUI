@@ -6,18 +6,20 @@
   "icon": "img/Topgui.ico",
   "homepage": "./",
   "scripts": {
+    "start": "./node_modules/.bin/electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "electron-packager . --platform=win32 --arch=x64 --icon=img/Topgui.ico --asar --overwrite"
+    "build": "electron-packager . builds/topgui --platform=win32 --arch=x64 --icon=img/Topgui.ico --asar --overwrite"
   },
   "author": "TheRolfFR",
   "license": "CC BY-NC-SA",
   "dependencies": {
     "electron": "^1.6.11",
-    "electron-settings": "^3.1.4",
+    "electron-settings": "^3.2.0",
     "get-image-colors": "^1.8.1",
+    "load-json-file": "^4.0.0",
+    "material-design-lite": "^1.3.0",
     "open": "^0.0.5",
-    "request": "^2.83.0",
-    "url-exists": "^1.0.3",
-    "load-json-file": "^4.0.0"
+    "request": "^2.88.2",
+    "url-exists": "^1.0.3"
   }
 }
