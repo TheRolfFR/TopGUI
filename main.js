@@ -16,13 +16,18 @@ function navigation() {
     'minHeight': 160,
     maximized: false,
     movable: true,
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+      webviewTag: true
+    },
     title: 'Topgui',
     icon: 'img/Topgui.ico',
-    backgroundColor: '#94c8f7',
     show: false
   });
 
   navigator.setMenu(null);
+  //navigator.openDevTools({ mode: 'detach' });
 
   navigator.loadURL(`file://${__dirname}/navigator.html`);
 

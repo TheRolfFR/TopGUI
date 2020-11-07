@@ -12,29 +12,41 @@
 	background-color: white;
 	height: 100%;
 }
-body.hover #content {
-	padding-top: 30px;
+html, body {
+	background: #2f2f2f;
 }
-#content {
-	height: 100%;
+body #content {
 	overflow: hidden;
 	border: 0px none;
 	transition: all .2s linear;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+body.hover #content {
+	top: 30px;
 }
 .webview.active {
-	height: 100%;
+	display: inline-flex !important;
 }
 .webview {
-	height: 0px;
+	background: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+	display: none;
 	overflow: hidden;
 }
 #haut {
 	position: fixed;
-	top: 0;
 	left: 0;
 	right:0;
+	top: -30px;
 	height: 30px;
-	opacity: 0;
 	background-color: #2F2F2F;
 	-webkit-app-region: drag;
 	z-index: 1000;
@@ -45,6 +57,9 @@ body.hover #content {
 	filter:progid:DXImageTransform.Microsoft.Shadow(color=rgba(0,0,0,0.5), Direction=NaN, Strength=3);
 	transition: all .2s linear;
 	color: white;
+}
+body.hover #haut {
+	top: 0;
 }
 #haut #tabs {
 	-webkit-app-region: no-drag;
@@ -123,9 +138,6 @@ ul.mdl-menu {
 }
 #controls * {
 	cursor: pointer;
-}
-body.hover #haut {
-	opacity: 1;
 }
 body .vex .vex-group {
 	margin-bottom: .5em;
