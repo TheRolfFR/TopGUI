@@ -1,3 +1,4 @@
 node_modules/
 topgui-win32-x64/
 *.url
+builds/
