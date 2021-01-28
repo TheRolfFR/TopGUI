@@ -23,6 +23,6 @@
     "url-exists": "^1.0.3"
   },
   "devDependencies": {
-    "electron": "^10.1.5"
+    "electron": "^10.2.0"
   }
 }
